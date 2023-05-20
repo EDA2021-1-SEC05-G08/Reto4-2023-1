@@ -56,16 +56,31 @@ dos listas, una para los videos, otra para las categorias de los mismos.
 # Construccion de modelos
 
 
-def new_data_structs():
+def new_data_structs()->dict:
     """
     Inicializa las estructuras de datos del modelo. Las crea de
     manera vacía para posteriormente almacenar la información.
     """
-    #TODO: Inicializar las estructuras de datos
-    pass
+    
+    modelo = {
+        "grafo": None
+    }
 
+    modelo["grafo"] = gr.newGraph(
+        datastructure='ADJ_LIST',
+        directed=False,
+        size=240000
+    )
+
+    return modelo
 
 # Funciones para agregar informacion al modelo
+
+def load_data(data_structs:dict, filename_tracks:str, filename_individuals:str)->dict:
+    """
+    Función para cargar los datos de lo archivos al modelo
+    """
+    return data_structs
 
 def add_data(data_structs, data):
     """
@@ -73,7 +88,6 @@ def add_data(data_structs, data):
     """
     #TODO: Crear la función para agregar elementos a una lista
     pass
-
 
 # Funciones para creacion de datos
 

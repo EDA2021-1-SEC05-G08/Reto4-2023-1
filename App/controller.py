@@ -31,22 +31,20 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 
-def new_controller():
+def new_controller()->dict:
     """
     Crea una instancia del modelo
     """
-    #TODO: Llamar la función del modelo que crea las estructuras de datos
-    pass
+    return model.new_data_structs()
 
 
 # Funciones para la carga de datos
 
-def load_data(control, filename):
+def load_data(control:dict, filename_tracks:str, filename_individuals:str)->dict:
     """
     Carga los datos del reto
     """
-    # TODO: Realizar la carga de datos
-    pass
+    return model.load_data(control, filename_tracks, filename_individuals)
 
 
 # Funciones de ordenamiento

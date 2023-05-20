@@ -40,12 +40,11 @@ operación solicitada
 """
 
 
-def new_controller():
+def new_controller()->dict:
     """
         Se crea una instancia del controlador
     """
-    #TODO: Llamar la función del controlador donde se crean las estructuras de datos
-    pass
+    return controller.new_controller()
 
 
 def print_menu():
@@ -62,12 +61,11 @@ def print_menu():
     print("0- Salir")
 
 
-def load_data(control):
+def load_data(control:dict, filename_tracks:str, filename_individuals:str)->dict:
     """
     Carga los datos
     """
-    #TODO: Realizar la carga de datos
-    pass
+    return controller.load_data(control, filename_tracks, filename_individuals)
 
 
 def print_data(control, id):
@@ -156,8 +154,14 @@ if __name__ == "__main__":
         inputs = input('Seleccione una opción para continuar\n')
         try:
             if int(inputs) == 1:
+                filename_tracks = input("Digite el nombre del archivo tracks que desea cargar: ")
+                filename_tracks = "./Data/" + filename_tracks
+                filename_individuals = input("Digite el nombre del archivo individuals que desea cargar: ")
+                filename_individuals = "./Data/" + filename_individuals
                 print("Cargando información de los archivos ....\n")
-                data = load_data(control)
+                data = load_data(control, filename_tracks, filename_individuals)
+                print(data)
+
             elif int(inputs) == 2:
                 print_req_1(control)
 
