@@ -63,7 +63,8 @@ def new_data_structs()->dict:
     """
     
     modelo = {
-        "grafo": None
+        "grafo": None,
+        "puntos_encuentro": None
     }
 
     modelo["grafo"] = gr.newGraph(
@@ -71,6 +72,11 @@ def new_data_structs()->dict:
         directed=False,
         size=240000
     )
+
+    modelo["puntos_encuentro"] = mp.newMap(
+        numelements=240000,
+        maptype='PROBING'
+        )
 
     return modelo
 
@@ -80,6 +86,46 @@ def load_data(data_structs:dict, filename_tracks:str, filename_individuals:str)-
     """
     Función para cargar los datos de lo archivos al modelo
     """
+
+    grafo = data_structs["grafo"]
+    puntos_encuentro = data_structs["puntos_encuentro"]
+
+    tracks_archivo = open(filename_tracks, "r", encoding="utf-8")
+    registro =  tracks_archivo.readline().replace("\n", "").split(",")
+    registro =  tracks_archivo.readline().replace("\n", "").split(",")
+    while len(registro) > 1:
+        location_long = str(round(float(registro[2]), 3)).replace("-", "m").replace(".", "p")
+        location_lat = str(round(float(registro[3]), 3)).replace("-", "m").replace(".", "p")
+        location_id = location_long + "_" + location_lat 
+        individual_id = registro[9] + "_" + registro[8]
+        punto_seguimiento = location_id + "_" + individual_id
+        grafo = crear_vertice(grafo, punto_seguimiento)
+
+        location_long = str(round(float(registro[2]), 4)).replace("-", "m").replace(".", "p")
+        location_lat = str(round(float(registro[3]), 4)).replace("-", "m").replace(".", "p")
+        location_id = location_long + "_" + location_lat 
+        individual_id = registro[9] + "_" + registro[8]
+        punto_seguimiento = location_id + "_" + individual_id
+        if not mp.contains(puntos_encuentro, location_id):
+            lista = lt.newList("ARRAY_LIST")
+            lt.addLast(lista, punto_seguimiento)
+            mp.put(puntos_encuentro, location_id, lista)
+        else:
+            lista = me.getValue(mp.get(puntos_encuentro, location_id))
+            if not lt.isPresent(lista, punto_seguimiento):
+                lt.addLast(lista, punto_seguimiento)
+                mp.put(puntos_encuentro, location_id, lista)
+                grafo = crear_vertice(grafo, location_id)
+        registro =  tracks_archivo.readline().replace("\n", "").split(",")
+    tracks_archivo.close()
+
+    for key in mp.keySet(puntos_encuentro):
+        if lt.size(me.getValue(mp.get(puntos_encuentro, key))) < 2:
+            mp.remove(puntos_encuentro, key)
+
+    data_structs["grafo"] = grafo
+    data_structs["puntos_encuentro"] = puntos_encuentro
+
     return data_structs
 
 def add_data(data_structs, data):
@@ -213,3 +259,16 @@ def sort(data_structs):
     """
     #TODO: Crear función de ordenamiento
     pass
+
+# Funciones auxiliares
+
+def crear_vertice(grafo, nombre_vertice: str):
+
+    if not gr.containsVertex(grafo, nombre_vertice):
+        gr.insertVertex(grafo, nombre_vertice)
+
+    return grafo
+
+def crear_arco(grafo, nombre_vertice_1: str, nombre_vertice_2:str, peso: float):
+    gr.addEdge(grafo, nombre_vertice_1, nombre_vertice_2, peso)
+    return grafo

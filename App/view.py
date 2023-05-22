@@ -160,7 +160,6 @@ if __name__ == "__main__":
                 filename_individuals = "./Data/" + filename_individuals
                 print("Cargando información de los archivos ....\n")
                 data = load_data(control, filename_tracks, filename_individuals)
-                print(data)
 
             elif int(inputs) == 2:
                 print_req_1(control)
